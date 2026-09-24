@@ -1,84 +1,115 @@
-# Data Structures and Algorithms - Task One Solutions
+# Data Structures and Algorithms - Task One Documentation
 
-## Task Overview
-This document outlines the architectural analysis, system algorithms, data structure justifications, and dynamic database design for an automated parking system in Kenya based on the client terms of reference.
-
----
-
-## (a) Module Algorithms
-
-### Module 1: Live Visual Display Module
-1. Iterate through the physical slot records in the `slots` Hash Map.
-2. Count vacant slots where `plate == None` and occupied slots where `plate != None`.
-3. Output the total capacity, number of available slots, and an ASCII grid showing slot statuses (VACANT vs. OCCUPIED).
-
-### Module 2: Vehicle Arrival & Entry Module
-1. Check if `available_slots > 0`. If equal to 0, deny entry and output "Parking Lot Full".
-2. Display the live visual slot grid to the driver.
-3. Capture the vehicle `plate_number`.
-4. Verify `plate_number` is not currently inside `vehicles` dictionary.
-5. Assign the first available `slot_id`.
-6. Record system timestamp `entry_time = current_time()`.
-7. Store details in dynamic state tables and open the entry barrier.
-
-### Module 3: Exit & Automated Billing Module
-1. Prompt for vehicle `plate_number`.
-2. Locate record in `vehicles` Hash Map.
-3. Record `exit_time = current_time()`.
-4. Calculate duration: `duration = exit_time - entry_time`.
-5. Compute total amount payable: `amount_due = max(HOURLY_RATE, duration_hours * HOURLY_RATE)`.
-6. Generate and display receipt invoice to the user.
-
-### Module 4: Payment Processing & Barrier Gate Control Module
-1. Receive payment confirmation status.
-2. IF payment is verified:
-   - Trigger signal to open exit barrier gate.
-   - Remove vehicle entry from `vehicles` database.
-   - Set slot status in `slots` database to `VACANT`.
-   - Close exit barrier gate after vehicle clears sensors.
-3. ELSE:
-   - Keep exit barrier gate locked/closed.
+**System Type:** Web Application with a User Interface
+**Tools Used:** Python (Flask), Jinja2 HTML, Tailwind CSS
+**Location:** Multimedia University of Kenya (MMU) / Republic of Kenya
 
 ---
 
-## (b) Data Structures and Justifications
+## 1. System Design
 
-* **Hash Map / Dictionary (`vehicles`)**
-  * **Description:** Stores key-value pairs where `key = plate_number` and `value = {slot_id, entry_time}`.
-  * **Justification:** Offers $O(1)$ constant time complexity for instant vehicle lookups, entry logs, and exit fee queries.
+The system uses a simple Model-View-Controller (MVC) setup:
 
-* **Hash Map / Dictionary (`slots`)**
-  * **Description:** Stores slot status mappings where `key = slot_id` and `value = plate_number / None`.
-  * **Justification:** Enables instant state tracking and rapid dynamic slot allocation in $O(1)$ time.
-
-* **Floating-Point Primitive (`entry_time` / `exit_time`)**
-  * **Description:** Stores high-precision Unix epoch timestamps.
-  * **Justification:** Allows exact floating-point subtraction for precise parking duration calculations.
+*   **Frontend (What the user sees):** Web pages built with HTML and styled with Tailwind CSS. It has pop-up boxes for clicking and selecting parking spaces directly.
+*   **Backend (The brain):** A Python Flask server that runs in the background and handles all the button clicks and data processing.
+*   **Database (Data storage):** We use fast Python Hash Maps (Dictionaries) and a List to store data in the computer's active memory. This makes finding and saving data instant.
 
 ---
 
-## (c) Dynamic Database Design
+## 2. The 8 System Modules
 
-The system utilizes an in-memory dynamic relational mapping model representing key entities:
+### Module 1: Live Parking Slot Display
+*   **Action:** When you open the home page.
+*   **Steps:**
+    1. Read the current status of all 15 parking bays.
+    2. Show green, clickable buttons for empty bays.
+    3. Show red, unclickable boxes for bays that already have a car.
 
-### 1. Slots Entity Table (`slots`)
-| Field | Data Type | Key Type | Description |
-| :--- | :--- | :--- | :--- |
-| `slot_id` | Integer | Primary Key | Unique slot identifier (1 to N) |
-| `assigned_plate` | String / Null | Foreign Key | License plate occupying slot (Null if vacant) |
+### Module 2: Car Entry & Slot Assignment
+*   **Action:** When a car arrives at the gate.
+*   **Steps:**
+    1. Take the car's number plate.
+    2. Check if the parking lot is completely full (all 15 spots taken).
+    3. Check if this exact car is already parked inside.
+    4. **Assign a spot:** If the user clicked a specific green bay, assign that one. If not, automatically find the very first empty bay.
+    5. Save the car's plate, its assigned bay, and the exact arrival time.
+    6. Show a success message.
 
-### 2. Vehicle Session Table (`vehicles`)
-| Field | Data Type | Key Type | Description |
-| :--- | :--- | :--- | :--- |
-| `plate_number` | String | Primary Key | Unique registration plate |
-| `slot_id` | Integer | Foreign Key | Reference to occupied physical slot |
-| `entry_time` | Timestamp | Attribute | Exact system arrival time |
+### Module 3: Price Calculation
+*   **Action:** A background task when a car wants to leave.
+*   **Steps:**
+    1. Calculate how many hours the car stayed (current time minus arrival time).
+    2. Calculate the basic cost (hours multiplied by the hourly rate).
+    3. Calculate the 16% VAT tax.
+    4. Add the tax to the basic cost to get the final total.
 
-### 3. Payment & Gate Log Transaction Schema
-| Field | Data Type | Description |
-| :--- | :--- | :--- |
-| `transaction_id` | Auto-UUID | Unique transaction record |
-| `plate_number` | String | Vehicle processed |
-| `total_duration` | Float | Time spent in parking |
-| `amount_paid` | Float | Parking fee paid in KES |
-| `barrier_status` | Boolean | True = Gate Released upon payment |
+### Module 4: Payment System
+*   **Action:** When the driver pays at the exit.
+*   **Steps:**
+    1. Take the number plate and how they want to pay (M-Pesa, Card, or Cash).
+    2. Get the final price from Module 3.
+    3. Create a unique receipt number (like TX-A1B2).
+    4. Save the full payment details to the permanent record book (Audit Log).
+
+### Module 5: Exit Gate Control
+*   **Action:** Happens right after the payment is successful.
+*   **Steps:**
+    1. Confirm the payment went through.
+    2. Mark the exit gate as "OPEN".
+    3. Empty the parking bay so someone else can use it.
+    4. Delete the car's active session from the system.
+
+### Module 6: Changing the Parking Price
+*   **Action:** When an admin wants to increase or decrease the hourly fee.
+*   **Steps:**
+    1. Take the new price typed by the admin.
+    2. Check that the new price is a valid number greater than zero.
+    3. Instantly apply the new price for all future calculations.
+
+### Module 7: Financial Records & Tax Report
+*   **Action:** Displaying the records table on the dashboard.
+*   **Steps:**
+    1. Read the list of all saved receipts.
+    2. Create a neat table showing the date, receipt number, number plate, payment method, basic fee, VAT tax, and total money collected.
+
+### Module 8: Admin Emergency Clear
+*   **Action:** If a car leaves without paying or there is a system error.
+*   **Steps:**
+    1. The admin types in the number plate.
+    2. The system finds which bay the car was using.
+    3. The system forcefully empties that bay and deletes the car's record.
+
+---
+
+## 3. Data Structures Used
+
+| Tool Used | Variable Name | Purpose | Speed | Why we chose it |
+| :--- | :--- | :--- | :--- | :--- |
+| **Hash Map (Dictionary)** | `slots` | Tracks 15 bays | Instant | Lets us check if a specific bay is empty or full immediately. |
+| **Hash Map (Dictionary)** | `vehicles` | Tracks parked cars | Instant | Lets us find a car's arrival time instantly using its number plate. |
+| **List (Array)** | `audit_log` | Saves receipts | Instant | Easy and fast to just add new receipts to the bottom of the list. |
+
+---
+
+## 4. How Data is Saved (Database Tables)
+
+Even though we use computer memory instead of a real database, this is how the data is organized:
+
+### 1. The Parking Bays Table
+*   **Bay ID:** A number from 1 to 15.
+*   **Car Plate:** The number plate of the car parked there (or empty).
+
+### 2. The Active Cars Table
+*   **Car Plate:** The unique number plate of the car.
+*   **Bay Number:** Where the car is currently parked.
+*   **Arrival Time:** The exact second the car entered.
+
+### 3. The Receipts Table (Audit Log)
+*   **Receipt ID:** A unique code for the payment.
+*   **Car Plate:** The car that paid.
+*   **Time Spent:** Total hours parked.
+*   **Payment Method:** M-Pesa, Card, or Cash.
+*   **Basic Cost:** Money charged before tax.
+*   **VAT (16%):** Government tax.
+*   **Total Paid:** The final amount handed over.
+*   **Date & Time:** When the payment happened.
