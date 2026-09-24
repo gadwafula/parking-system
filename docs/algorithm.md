@@ -2,7 +2,7 @@
 
 **System Type:** Web Application with a User Interface
 **Tools Used:** Python (Flask), Jinja2 HTML, Tailwind CSS
-**Location:** Multimedia University of Kenya (MMU) / Republic of Kenya
+**Kenya
 
 ---
 
@@ -10,9 +10,9 @@
 
 The system uses a simple Model-View-Controller (MVC) setup:
 
-*   **Frontend (What the user sees):** Web pages built with HTML and styled with Tailwind CSS. It has pop-up boxes for clicking and selecting parking spaces directly.
-*   **Backend (The brain):** A Python Flask server that runs in the background and handles all the button clicks and data processing.
-*   **Database (Data storage):** We use fast Python Hash Maps (Dictionaries) and a List to store data in the computer's active memory. This makes finding and saving data instant.
+*   **Frontend** Web pages built with HTML and styled with Tailwind CSS. It has pop-up boxes for clicking and selecting parking spaces directly.
+*   **Backend** A Python Flask server that runs in the background and handles all the button clicks and data processing.
+*   **Database (Data storage):** We use fast Python Hash Maps and a List to store data in the computer's active memory. This makes finding and saving data instant.
 
 ---
 
@@ -85,8 +85,8 @@ The system uses a simple Model-View-Controller (MVC) setup:
 
 | Tool Used | Variable Name | Purpose | Speed | Why we chose it |
 | :--- | :--- | :--- | :--- | :--- |
-| **Hash Map (Dictionary)** | `slots` | Tracks 15 bays | Instant | Lets us check if a specific bay is empty or full immediately. |
-| **Hash Map (Dictionary)** | `vehicles` | Tracks parked cars | Instant | Lets us find a car's arrival time instantly using its number plate. |
+| **Hash Map ** | `slots` | Tracks 15 bays | Instant | Enable checking if a specific bay is empty or full immediately. |
+| **Hash Map ** | `vehicles` | Tracks parked cars | Instant | Lets us find a car's arrival time instantly using its number plate. |
 | **List (Array)** | `audit_log` | Saves receipts | Instant | Easy and fast to just add new receipts to the bottom of the list. |
 
 ---
@@ -106,8 +106,8 @@ Even though we use computer memory instead of a real database, this is how the d
 
 ### 3. The Receipts Table (Audit Log)
 *   **Receipt ID:** A unique code for the payment.
-*   **Car Plate:** The car that paid.
-*   **Time Spent:** Total hours parked.
+*   **Car Plate:**
+*   **Time Spent:** 
 *   **Payment Method:** M-Pesa, Card, or Cash.
 *   **Basic Cost:** Money charged before tax.
 *   **VAT (16%):** Government tax.
