@@ -2,7 +2,7 @@
 
 **System Type:** Web Application with a User Interface
 **Tools Used:** Python (Flask), Jinja2 HTML, Tailwind CSS
-**Kenya
+**Kenya**
 
 ---
 
