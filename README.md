@@ -2,7 +2,7 @@
 
 **Course / Project:** Data Structures and Algorithms - Task One
 
-**Location:** Multimedia University of Kenya (MMU) / Republic of Kenya
+**Location:** Republic of Kenya
 
 **Tech Stack:** Python (Flask), Jinja2 HTML, Tailwind CSS
 
@@ -39,7 +39,7 @@ A web-based parking management system that demonstrates the practical applicatio
 
 This project is built using a simple **Model-View-Controller (MVC)** setup:
 
-* **Frontend (View):** Web pages built with HTML and styled with Tailwind CSS. It includes interactive pop-up modals for selecting parking spaces directly.
+* **Frontend:** Web pages built with HTML and styled with Tailwind CSS. It includes interactive pop-up modals for selecting parking spaces directly.
 
 * **Backend (Controller):** A Python Flask server that handles all button clicks, form submissions, and data processing.
 
@@ -99,8 +99,8 @@ This project is built using a simple **Model-View-Controller (MVC)** setup:
 
 | Data Structure | Variable Name | Purpose | Time Complexity | Why we chose it | 
  | ----- | ----- | ----- | ----- | ----- | 
-| **Hash Map (Dict)** | `slots` | Tracks 15 bays | **O(1)** | Lets us check if a specific bay is empty or full instantly using the Bay ID. | 
-| **Hash Map (Dict)** | `vehicles` | Tracks parked cars | **O(1)** | Lets us find a car's exact arrival time instantly using its number plate. | 
+| **Hash Map (Dict)** | `slots` | Tracks 15 bays | **O(1)** | Check if a specific bay is empty or full instantly using the Bay ID. | 
+| **Hash Map (Dict)** | `vehicles` | Tracks parked cars | **O(1)** |Finds a car's exact arrival time instantly using its number plate. | 
 | **List (Array)** | `audit_log` | Saves receipts | **O(1) Append** | Fast and easy to add new receipts to the bottom of the financial ledger. | 
 
 ## 🗄️ 4. In-Memory Database Schema
